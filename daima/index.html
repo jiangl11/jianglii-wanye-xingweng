@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI新闻地图</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI新闻地图</h1>
+            <div class="controls">
+                <div class="filter-panel">
+                    <select id="category-filter" multiple>
+                        <option value="politics">政治</option>
+                        <option value="economy">经济</option>
+                        <option value="disaster">灾害</option>
+                        <option value="tech">科技</option>
+                        <option value="sports">体育</option>
+                    </select>
+                    <input type="text" id="location-input" placeholder="输入地区...">
+                    <button id="subscribe-btn">订阅</button>
+                </div>
+                <div class="time-controls">
+                    <input type="range" id="timeline" min="0" max="100" value="50">
+                    <button id="play-btn">播放</button>
+                </div>
+            </div>
+        </header>
+        <div id="map"></div>
+    </div>
+
+    <div class="detail-panel" id="detail-panel">
+        <button class="close-btn" id="close-btn">×</button>
+        <h2 id="news-title"></h2>
+        <p id="news-summary"></p>
+        <a href="#" id="news-link" target="_blank">阅读原文</a>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
