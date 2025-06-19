@@ -5,12 +5,211 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI 新闻地图</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="libs/leaflet/leaflet.css" />
-    <script src="libs/leaflet/leaflet.js"></script>
-    <script src="libs/leaflet/leaflet-heat.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
 </head>
 <body>
-    <!-- 这里省略原有页面内容，请将原内容粘贴回此处 -->
+    <!-- 顶部导航栏 -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-text" style="font-size:1.4em;font-weight:700;letter-spacing:0.05em;">jianglii</span>
+            </div>
+            <div class="header-controls">
+                <button class="btn btn-secondary" id="themeToggle">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                </button>
+                <button class="btn btn-primary" id="filterToggle" title="筛选器">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46"/>
+                    </svg>
+                </button>
+                <button class="btn btn-primary" id="heatmapToggle" title="热力图模式">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 2v20M2 12h20"/>
+                    </svg>
+                </button>
+                <button class="btn btn-primary" id="fullscreenBtn" title="全屏">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="15,3 21,3 21,9"/>
+                        <polyline points="9,21 3,21 3,15"/>
+                        <line x1="21" y1="3" x2="14" y2="10"/>
+                        <line x1="3" y1="21" x2="10" y2="14"/>
+                    </svg>
+                </button>
+                <button class="btn btn-primary" id="settingsBtn" title="设置">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容区域 -->
+    <main class="main-content">
+        <!-- 左侧筛选面板 -->
+        <aside class="filter-panel" id="filterPanel">
+            <div class="panel-header">
+                <h3>筛选器</h3>
+            </div>
+
+            <!-- 新闻分类筛选 -->
+            <div class="filter-section">
+                <h4>新闻分类</h4>
+                <div class="filter-options">
+                    <label class="filter-option">
+                        <input type="checkbox" value="politics" checked>
+                        <span class="checkmark"></span>
+                        <span class="label">政治</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" value="economy" checked>
+                        <span class="checkmark"></span>
+                        <span class="label">经济</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" value="disaster" checked>
+                        <span class="checkmark"></span>
+                        <span class="label">灾害</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" value="tech" checked>
+                        <span class="checkmark"></span>
+                        <span class="label">科技</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" value="sports" checked>
+                        <span class="checkmark"></span>
+                        <span class="label">体育</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- 热度阈值 -->
+            <div class="filter-section">
+                <h4>热度阈值</h4>
+                <div class="slider-container">
+                    <label for="heatThreshold">热度阈值</label>
+                    <input type="range" id="heatThreshold" min="0" max="100" value="30" class="slider" aria-label="热度阈值">
+                    <div class="slider-labels">
+                        <span>0</span>
+                        <span id="thresholdValue">30</span>
+                        <span>100</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 日期选择器 -->
+            <div class="filter-section">
+                <h4>选择日期</h4>
+                <label for="datePicker">选择日期</label>
+                <input type="date" id="datePicker" class="date-picker" aria-label="选择日期">
+            </div>
+        </aside>
+
+        <!-- 筛选器遮罩层 -->
+        <div class="filter-overlay" id="filterOverlay"></div>
+
+        <!-- 地图容器 -->
+        <div class="map-container">
+            <div id="map"></div>
+        </div>
+
+        <!-- 右侧详情面板 -->
+        <aside class="detail-panel" id="detailPanel" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:3000;max-width:540px;width:95%;background:#fff;border-radius:18px;box-shadow:0 8px 32px rgba(0,0,0,0.18);display:none;">
+            <div class="panel-header">
+                <h3>新闻详情</h3>
+                <button class="close-btn" id="closeDetailPanel">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="detail-content" id="detailContent">
+                <div class="placeholder">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="16" x2="12" y2="12"/>
+                        <line x1="12" y1="8" x2="12.01" y2="8"/>
+                    </svg>
+                    <p>点击地图上的标记点查看新闻详情</p>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- 加载指示器 -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>正在加载新闻数据...</p>
+        </div>
+    </div>
+
+    <!-- 加载提示界面 -->
+    <div class="load-prompt-overlay" id="loadPrompt">
+        <div class="load-prompt-panel">
+            <div class="prompt-header">
+                <h2>欢迎使用 AI 新闻地图</h2>
+                <button class="close-btn" id="closeLoadPrompt">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="prompt-content">
+                <p>请选择加载新闻数据的方式：</p>
+                <div class="load-options">
+                    <button class="load-option-btn btn btn-success" onclick="app.instantLoadData()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="13,17 18,12 13,7"/>
+                            <polyline points="6,17 11,12 6,7"/>
+                        </svg>
+                        <div class="option-content">
+                            <h3>即时加载</h3>
+                            <p>立即显示新闻数据，无延迟</p>
+                        </div>
+                    </button>
+                    <button class="load-option-btn btn btn-primary" onclick="app.loadMockData()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12,6 12,12 16,14"/>
+                        </svg>
+                        <div class="option-content">
+                            <h3>快速加载</h3>
+                            <p>200ms 快速加载，推荐使用</p>
+                        </div>
+                    </button>
+                    <button class="load-option-btn btn btn-secondary" onclick="app.loadMockDataSlow()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12,6 12,12 16,14"/>
+                        </svg>
+                        <div class="option-content">
+                            <h3>普通加载</h3>
+                            <p>500ms 加载，模拟真实网络环境</p>
+                        </div>
+                    </button>
+                </div>
+                <div class="prompt-footer">
+                    <p class="prompt-tip">💡 提示：您可以随时在设置中重新加载数据</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 通知提示 -->
+    <div class="notification" id="notification"></div>
+
     <script src="script.js"></script>
 </body>
-</html>
+</html> 
